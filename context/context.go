@@ -23,6 +23,7 @@ import (
 	"github.com/omec-project/smf/factory"
 	"github.com/omec-project/smf/logger"
 	"github.com/omec-project/smf/metrics"
+	"github.com/omec-project/smf/util"
 	"github.com/omec-project/util/drsm"
 )
 
@@ -160,8 +161,16 @@ func InitSmfContext(config *factory.Config) *SMFContext {
 		}
 
 		if tls := sbi.TLS; tls != nil {
-			smfContext.Key = tls.Key
-			smfContext.PEM = tls.PEM
+			if tls.Key != "" {
+				smfContext.Key = tls.Key
+			} else {
+				smfContext.Key = util.SmfKeyPath
+			}
+			if tls.PEM != "" {
+				smfContext.PEM = tls.PEM
+			} else {
+				smfContext.PEM = util.SmfPemPath
+			}
 		}
 
 		smfContext.BindingIPv4 = os.Getenv(sbi.BindingIPv4)
